@@ -45,6 +45,7 @@ export function KanbanBoard({
       {STATUS_COLUMNS.map((column) => (
         <KanbanColumn
           key={column.key}
+          columnKey={column.key}
           label={column.label}
           tasks={getTasksByStatus(column.key)}
           epics={getEpicsByStatus(column.key)}

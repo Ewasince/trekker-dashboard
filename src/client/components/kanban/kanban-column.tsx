@@ -1,22 +1,20 @@
 'use client';
 
 import { Archive, Plus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import {
-  ColumnFilter,
-  type ColumnFilterState,
-  DEFAULT_FILTER,
-} from '@/components/kanban/column-filter';
+import { ColumnFilter, DEFAULT_FILTER } from '@/components/kanban/column-filter';
 import { EpicCard } from '@/components/kanban/epic-card';
 import { TaskCard } from '@/components/kanban/task-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { usePersistentState } from '@/hooks/use-persistent-state';
 import { compareByKeys } from '@/lib/sort';
 import { countCompleted } from '@/lib/status';
 import type { Epic, Task } from '@/types';
 
 interface KanbanColumnProps {
+  columnKey: string;
   label: string;
   tasks: Task[];
   epics: Epic[];
@@ -29,6 +27,7 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({
+  columnKey,
   label,
   tasks,
   epics,
@@ -39,7 +38,10 @@ export function KanbanColumn({
   onEpicClick,
   onArchiveAll,
 }: KanbanColumnProps) {
-  const [filter, setFilter] = useState<ColumnFilterState>(DEFAULT_FILTER);
+  const [filter, setFilter] = usePersistentState(
+    `kanban-column-filter:${columnKey}`,
+    DEFAULT_FILTER
+  );
 
   const filteredEpics = useMemo(() => {
     if (filter.type === 'task') return [];
