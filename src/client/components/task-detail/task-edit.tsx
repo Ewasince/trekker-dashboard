@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { TagsInput } from '@/components/ui/tags-input';
 import { Textarea } from '@/components/ui/textarea';
+import { useTags } from '@/hooks/use-tags';
 import { TASK_STATUSES } from '@/lib/constants';
 import type { Epic } from '@/types';
 
@@ -57,6 +59,7 @@ export function TaskEdit({
   const priority = watch('priority');
   const tags = watch('tags');
   const epicId = watch('epicId');
+  const { data: tagsData } = useTags();
 
   const handleFormSubmit = async (data: TaskFormData) => {
     const success = await onSubmit(data);
@@ -126,11 +129,11 @@ export function TaskEdit({
         </div>
 
         <div className="space-y-2">
-          <Label>Tags (comma-separated)</Label>
-          <Input
+          <Label>Tags</Label>
+          <TagsInput
             value={tags}
-            onChange={(e) => setValue('tags', e.target.value)}
-            placeholder="bug, frontend, urgent"
+            onChange={(v) => setValue('tags', v)}
+            suggestions={tagsData?.tags ?? []}
           />
         </div>
 
