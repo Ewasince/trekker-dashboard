@@ -1,8 +1,10 @@
 'use client';
 
 import type { ListEntityType, ListFilters } from '@/hooks/use-list';
+import { useTags } from '@/hooks/use-tags';
 import { PRIORITY_LABELS, STATUS_LABELS, TASK_STATUSES } from '@/lib/constants';
 import { SORT_OPTIONS } from '@/lib/sort';
+import { parseTagList } from '@/lib/tags';
 import {
   type FilterOption,
   parseFilterValues,
@@ -51,6 +53,9 @@ export function ListPageFilters({
     onSetFilters(withResetPage(filters, updates));
   }
 
+  const { data: tagsData } = useTags();
+  const tagSuggestions = tagsData?.tags ?? [];
+
   return (
     <ListPageFiltersView
       hasActiveFilters={hasActiveFilters}
@@ -62,6 +67,8 @@ export function ListPageFilters({
       sortValue={filters.sort ?? 'created:desc'}
       statusOptions={STATUS_OPTIONS}
       statusValue={serializeFilterValues(filters.statuses)}
+      tagSuggestions={tagSuggestions}
+      tagsValue={(filters.tags ?? []).join(', ')}
       typeOptions={TYPE_OPTIONS}
       onClearFilters={onClearFilters}
       onPriorityChange={(value) => updateFilters({ priorities: parseNumericFilterValues(value) })}
@@ -70,6 +77,14 @@ export function ListPageFilters({
       onStatusChange={(value) =>
         updateFilters({ statuses: parseFilterValues(value, STATUS_OPTIONS) })
       }
+      onTagsChange={(value) => {
+        const nextTags = parseTagList(value);
+        let tags: string[] | undefined = nextTags;
+        if (nextTags.length === 0) {
+          tags = undefined;
+        }
+        updateFilters({ tags });
+      }}
       onToggleTypeFilter={onToggleTypeFilter}
     />
   );

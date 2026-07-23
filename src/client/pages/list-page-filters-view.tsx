@@ -4,6 +4,7 @@ import { Search, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { TagsInput } from '@/components/ui/tags-input';
 import type { ListEntityType } from '@/hooks/use-list';
 import type { FilterOption } from '@/pages/filter-helpers';
 import { PageFilterSelect } from '@/pages/page-filter-select';
@@ -29,12 +30,15 @@ interface ListPageFiltersViewProps {
   sortValue: string;
   statusOptions: readonly FilterOption[];
   statusValue: string;
+  tagSuggestions: readonly string[];
+  tagsValue: string;
   typeOptions: readonly FilterOption<ListEntityType>[];
   onClearFilters: () => void;
   onPriorityChange: (value: string) => void;
   onSearchQueryChange: (value: string) => void;
   onSortChange: (value: string) => void;
   onStatusChange: (value: string) => void;
+  onTagsChange: (value: string) => void;
   onToggleTypeFilter: (type: ListEntityType) => void;
 }
 
@@ -48,12 +52,15 @@ export function ListPageFiltersView({
   sortValue,
   statusOptions,
   statusValue,
+  tagSuggestions,
+  tagsValue,
   typeOptions,
   onClearFilters,
   onPriorityChange,
   onSearchQueryChange,
   onSortChange,
   onStatusChange,
+  onTagsChange,
   onToggleTypeFilter,
 }: ListPageFiltersViewProps) {
   return (
@@ -103,6 +110,14 @@ export function ListPageFiltersView({
         value={sortValue}
         widthClassName="w-[180px]"
         onValueChange={onSortChange}
+      />
+
+      <TagsInput
+        value={tagsValue}
+        onChange={onTagsChange}
+        suggestions={[...tagSuggestions]}
+        placeholder="Filter tags..."
+        className="w-56"
       />
 
       {hasActiveFilters && (
