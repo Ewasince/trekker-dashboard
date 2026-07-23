@@ -50,7 +50,6 @@ export function EpicDetailModal({
   if (!epic) return null;
 
   const handleAddTask = () => {
-    handleClose();
     openCreateModal({ type: 'task', status: 'todo', epicId: epic.id });
   };
 

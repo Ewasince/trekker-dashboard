@@ -62,7 +62,6 @@ export function TaskDetailModal({
   if (!task) return null;
 
   const handleAddSubtask = () => {
-    handleClose();
     openCreateModal({ type: 'subtask', status: 'todo', parentTaskId: task.id });
   };
 
