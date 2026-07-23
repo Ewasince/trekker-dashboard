@@ -83,7 +83,7 @@ export function TagsInput({
       return;
     }
 
-    if (e.key === ',' && search.trim().length > 0) {
+    if ((e.key === ',' || e.key === ' ') && search.trim().length > 0) {
       e.preventDefault();
       addTag(search);
       return;
