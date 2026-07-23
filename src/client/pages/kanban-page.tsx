@@ -2,7 +2,10 @@
 
 import { KanbanBoard } from '@/components/kanban';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { TagsInput } from '@/components/ui/tags-input';
+import { useTags } from '@/hooks/use-tags';
 import { getErrorMessage } from '@/lib/errors';
+import { parseTagList } from '@/lib/tags';
 import { EntityDetailModals } from '@/pages/entity-detail-modals';
 import { useKanbanPageState } from '@/pages/use-kanban-page-state';
 
@@ -22,11 +25,18 @@ export function KanbanPage() {
     refetch,
     selectedEpic,
     selectedEpicTasks,
+    selectedTags,
     selectedTask,
+    setSelectedTags,
     showArchiveConfirm,
     tasks,
     updateArchiveConfirm,
+    visibleEpics,
+    visibleTasks,
   } = useKanbanPageState();
+
+  const { data: tagsData } = useTags();
+  const tagSuggestions = tagsData?.tags ?? [];
 
   if (isLoading && tasks.length === 0) {
     return (
@@ -47,9 +57,19 @@ export function KanbanPage() {
   return (
     <>
       <main className="flex-1 p-4 overflow-x-auto">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Tags</span>
+          <TagsInput
+            value={selectedTags.join(', ')}
+            onChange={(value) => setSelectedTags(parseTagList(value))}
+            suggestions={tagSuggestions}
+            placeholder="Filter tags..."
+            className="w-72"
+          />
+        </div>
         <KanbanBoard
-          tasks={tasks}
-          epics={epics}
+          tasks={visibleTasks}
+          epics={visibleEpics}
           onAddClick={(status) => openCreateModal({ status })}
           onTaskClick={(task) => openTaskDetail(task.id)}
           onEpicClick={(epic) => openEpicDetail(epic.id)}
