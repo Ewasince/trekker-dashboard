@@ -6,12 +6,14 @@ import { CreateModal } from '@/components/create-modal';
 import { ConnectionIndicator } from '@/components/shared/connection-indicator';
 import { useAppData } from '@/hooks/use-data';
 import { useHashSync } from '@/hooks/use-hash-sync';
+import { usePageTitle } from '@/hooks/use-page-title';
 import { useUIStore } from '@/stores';
 
 export function App() {
   const location = useLocation();
   const { tasks, epics, project, refetch } = useAppData();
   useHashSync(tasks, epics);
+  usePageTitle();
   const {
     connectionStatus,
     showCreateModal,
