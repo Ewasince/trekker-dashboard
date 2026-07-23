@@ -42,6 +42,7 @@ export function TagsInput({
 }: TagsInputProps) {
   const [search, setSearch] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   const tags = React.useMemo(() => dedupeTags(parseTags(value)), [value]);
@@ -70,14 +71,35 @@ export function TagsInput({
     );
   }, [suggestions, tags, search]);
 
+  // Reset the highlighted suggestion whenever the list changes underneath it.
+  React.useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [search, open]);
+
   useOnClickOutside(containerRef as React.RefObject<HTMLElement>, () => {
     setOpen(false);
   });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setOpen(true);
+      setHighlightedIndex((i) => Math.min(i + 1, filteredSuggestions.length - 1));
+      return;
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((i) => Math.max(i - 1, 0));
+      return;
+    }
+
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (search.trim().length > 0) {
+      const highlighted = filteredSuggestions[highlightedIndex];
+      if (highlighted) {
+        addTag(highlighted);
+      } else if (search.trim().length > 0) {
         addTag(search);
       }
       return;
@@ -91,7 +113,10 @@ export function TagsInput({
 
     const lastTag = tags.at(-1);
     if (e.key === 'Backspace' && search.length === 0 && lastTag) {
-      removeTag(lastTag);
+      // Turn the removed chip back into editable text instead of dropping it.
+      e.preventDefault();
+      setTags(tags.slice(0, -1));
+      setSearch(lastTag);
     }
   };
 
@@ -129,11 +154,15 @@ export function TagsInput({
       {open && filteredSuggestions.length > 0 && (
         <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md">
           <div className="max-h-[200px] overflow-y-auto p-1">
-            {filteredSuggestions.map((s) => (
+            {filteredSuggestions.map((s, index) => (
               <button
                 key={s}
                 type="button"
-                className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                className={cn(
+                  'relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground',
+                  index === highlightedIndex && 'bg-accent text-accent-foreground'
+                )}
+                onMouseEnter={() => setHighlightedIndex(index)}
                 onClick={() => addTag(s)}
               >
                 <span className="truncate">{s}</span>
