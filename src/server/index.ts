@@ -12,6 +12,7 @@ import historyRoutes from '@server/routes/history';
 import listRoutes from '@server/routes/list';
 import projectRoutes from '@server/routes/project';
 import searchRoutes from '@server/routes/search';
+import tagsRoutes from '@server/routes/tags';
 import tasksRoutes from '@server/routes/tasks';
 import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
@@ -37,6 +38,7 @@ export function createApp() {
   app.route('/api/events', eventsRoutes);
   app.route('/api/search', searchRoutes);
   app.route('/api/list', listRoutes);
+  app.route('/api/tags', tagsRoutes);
   app.route('/api/history', historyRoutes);
   app.route('/api/bulk-archive-completed', archiveRoutes);
 
