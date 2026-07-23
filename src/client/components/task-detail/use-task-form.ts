@@ -61,6 +61,7 @@ export function useTaskForm({ task, open, isEditing, onClose, onUpdate }: UseTas
       toast.success('Task updated');
       onUpdate();
       queryClient.invalidateQueries({ queryKey: ['history'] });
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
       return true;
     } catch (error) {
       toast.error(getErrorMessage(error, 'Failed to update task'));

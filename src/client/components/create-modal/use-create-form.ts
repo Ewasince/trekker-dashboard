@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -61,6 +62,7 @@ function toCreateSubtaskPayload(data: CreateFormValues) {
 }
 
 export function useCreateForm({ type, defaultStatus, onClose, onCreated }: UseCreateFormOptions) {
+  const queryClient = useQueryClient();
   const form = useForm<CreateFormValues>({
     resolver: zodResolver(SCHEMA_BY_TYPE[type]),
     defaultValues: getDefaultCreateFormValues(defaultStatus),
@@ -136,6 +138,7 @@ export function useCreateForm({ type, defaultStatus, onClose, onCreated }: UseCr
           toast.success(`Task ${created.id} created`);
         }
 
+        queryClient.invalidateQueries({ queryKey: ['tags'] });
         onClose();
         onCreated();
       } catch (error) {
