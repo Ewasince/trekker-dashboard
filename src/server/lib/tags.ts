@@ -14,9 +14,7 @@ export function collectDistinctTags(rows: (string | null)[]): string[] {
     }
   }
 
-  return [...seen].sort((a, b) =>
-    a.toLowerCase().localeCompare(b.toLowerCase())
-  );
+  return [...seen].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 }
 
 // ponytail: LIKE match assumes tags stored comma-separated (", " or ",") and that tag
