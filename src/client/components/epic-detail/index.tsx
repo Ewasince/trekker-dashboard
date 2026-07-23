@@ -1,11 +1,14 @@
 'use client';
 
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import { EpicEdit } from '@/components/epic-detail/epic-edit';
 import { EpicView } from '@/components/epic-detail/epic-view';
 import { buildEpicBreadcrumbItems } from '@/components/epic-detail/selectors';
 import { useEpicForm } from '@/components/epic-detail/use-epic-form';
+import { Button } from '@/components/ui/button';
+import { useUIStore } from '@/stores';
 import type { Epic, Task } from '@/types';
 
 interface EpicDetailModalProps {
@@ -26,6 +29,7 @@ export function EpicDetailModal({
   onTaskClick,
 }: EpicDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const openCreateModal = useUIStore((s) => s.openCreateModal);
 
   const {
     form,
@@ -44,6 +48,11 @@ export function EpicDetailModal({
   };
 
   if (!epic) return null;
+
+  const handleAddTask = () => {
+    handleClose();
+    openCreateModal({ type: 'task', status: 'todo', epicId: epic.id });
+  };
 
   const breadcrumbItems = buildEpicBreadcrumbItems(epic);
 
@@ -69,6 +78,12 @@ export function EpicDetailModal({
         onStatusChange={handleStatusChange}
         onPriorityChange={handlePriorityChange}
         onTaskClick={onTaskClick}
+        actions={
+          <Button variant="outline" size="sm" onClick={handleAddTask}>
+            <Plus className="mr-1 h-4 w-4" />
+            Add task
+          </Button>
+        }
       />
 
       <EpicEdit

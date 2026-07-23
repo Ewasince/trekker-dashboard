@@ -17,6 +17,8 @@ import type { CreateType } from '@/types';
 interface UseCreateFormOptions {
   type: CreateType;
   defaultStatus?: string;
+  defaultEpicId?: string;
+  defaultParentTaskId?: string;
   onClose: () => void;
   onCreated: () => void;
 }
@@ -60,16 +62,23 @@ function toCreateSubtaskPayload(data: CreateFormValues) {
   };
 }
 
-export function useCreateForm({ type, defaultStatus, onClose, onCreated }: UseCreateFormOptions) {
+export function useCreateForm({
+  type,
+  defaultStatus,
+  defaultEpicId,
+  defaultParentTaskId,
+  onClose,
+  onCreated,
+}: UseCreateFormOptions) {
   const form = useForm<CreateFormValues>({
     resolver: zodResolver(SCHEMA_BY_TYPE[type]),
-    defaultValues: getDefaultCreateFormValues(defaultStatus),
+    defaultValues: getDefaultCreateFormValues(defaultStatus, defaultEpicId, defaultParentTaskId),
   });
 
   // Reset form when type changes
   useEffect(() => {
-    form.reset(getDefaultCreateFormValues(defaultStatus));
-  }, [type, defaultStatus, form]);
+    form.reset(getDefaultCreateFormValues(defaultStatus, defaultEpicId, defaultParentTaskId));
+  }, [type, defaultStatus, defaultEpicId, defaultParentTaskId, form]);
 
   const {
     formState: { isSubmitting },

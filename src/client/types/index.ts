@@ -53,6 +53,8 @@ export type CreateType = 'epic' | 'task' | 'subtask';
 export interface CreateModalDefaults {
   status?: string;
   type?: CreateType;
+  epicId?: string;
+  parentTaskId?: string;
 }
 
 export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected';

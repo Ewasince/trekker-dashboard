@@ -49,6 +49,9 @@ export function App() {
         epics={epics}
         tasks={tasks}
         defaultStatus={createModalDefaults.status || 'todo'}
+        defaultType={createModalDefaults.type}
+        defaultEpicId={createModalDefaults.epicId}
+        defaultParentTaskId={createModalDefaults.parentTaskId}
       />
     </div>
   );

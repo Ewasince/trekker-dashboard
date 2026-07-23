@@ -26,6 +26,8 @@ interface CreateDrawerProps {
   tasks: Task[];
   defaultStatus?: string;
   defaultType?: CreateType;
+  defaultEpicId?: string;
+  defaultParentTaskId?: string;
 }
 
 const TYPE_OPTIONS = [
@@ -42,6 +44,8 @@ export function CreateModal({
   tasks,
   defaultStatus,
   defaultType,
+  defaultEpicId,
+  defaultParentTaskId,
 }: CreateDrawerProps) {
   const [type, setType] = useState<CreateType>('task');
   const parentTasks = tasks.filter((t) => !t.parentTaskId);
@@ -49,6 +53,8 @@ export function CreateModal({
   const { form, isSubmitting, handleSubmit } = useCreateForm({
     type,
     defaultStatus,
+    defaultEpicId,
+    defaultParentTaskId,
     onClose,
     onCreated,
   });

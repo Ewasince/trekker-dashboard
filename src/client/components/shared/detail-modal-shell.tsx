@@ -15,6 +15,7 @@ interface DetailModalShellProps {
   title: string;
   description: string | null;
   onEdit: () => void;
+  actions?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -25,6 +26,7 @@ export function DetailModalShell({
   title,
   description,
   onEdit,
+  actions,
   children,
 }: DetailModalShellProps) {
   let descriptionContent = <p className="text-sm text-muted-foreground italic">No description</p>;
@@ -43,10 +45,13 @@ export function DetailModalShell({
           <div className="flex flex-col min-w-0">
             <div className="px-4 pt-4 pb-2 flex justify-between items-start">
               <h2 className="text-xl font-semibold">{title}</h2>
-              <Button variant="ghost" size="sm" onClick={onEdit}>
-                <Pencil className="mr-1 h-4 w-4" />
-                Edit
-              </Button>
+              <div className="flex items-center gap-1 shrink-0">
+                {actions}
+                <Button variant="ghost" size="sm" onClick={onEdit}>
+                  <Pencil className="mr-1 h-4 w-4" />
+                  Edit
+                </Button>
+              </div>
             </div>
 
             <div className="px-4 pb-4">

@@ -19,14 +19,18 @@ export function buildParentTaskOptions(parentTasks: Task[]): CreateSelectOption[
   }));
 }
 
-export function getDefaultCreateFormValues(defaultStatus?: string) {
+export function getDefaultCreateFormValues(
+  defaultStatus?: string,
+  defaultEpicId?: string,
+  defaultParentTaskId?: string
+) {
   return {
     title: '',
     description: '',
     status: defaultStatus ?? 'todo',
     priority: 2,
     tags: '',
-    epicId: null,
-    parentTaskId: '',
+    epicId: defaultEpicId ?? null,
+    parentTaskId: defaultParentTaskId ?? '',
   };
 }

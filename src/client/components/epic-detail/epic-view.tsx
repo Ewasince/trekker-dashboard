@@ -17,6 +17,7 @@ interface EpicViewProps {
   onStatusChange: (status: string) => void;
   onPriorityChange: (priority: number) => void;
   onTaskClick?: (task: Task) => void;
+  actions?: React.ReactNode;
 }
 
 export function EpicView({
@@ -31,6 +32,7 @@ export function EpicView({
   onStatusChange,
   onPriorityChange,
   onTaskClick,
+  actions,
 }: EpicViewProps) {
   return (
     <DetailModalShell
@@ -40,6 +42,7 @@ export function EpicView({
       title={epic.title}
       description={epic.description}
       onEdit={onEdit}
+      actions={actions}
     >
       <EpicSidebar
         status={status}
