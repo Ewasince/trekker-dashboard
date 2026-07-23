@@ -69,9 +69,9 @@ export function useListPageState() {
   }
   const hasActiveFilters = Boolean(
     filters.types?.length ||
-      filters.statuses?.length ||
-      filters.priorities?.length ||
-      filters.tags?.length
+    filters.statuses?.length ||
+    filters.priorities?.length ||
+    filters.tags?.length
   );
   let totalPages = 0;
   if (data) {
