@@ -5,9 +5,10 @@ import { Controller, type UseFormReturn } from 'react-hook-form';
 
 import { buildParentTaskOptions } from '@/components/create-modal/create-form.utils';
 import type { CreateFormValues } from '@/components/create-modal/schema';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SearchableSelect } from '@/components/ui/searchable-select';
+import { TagsInput } from '@/components/ui/tags-input';
+import { useTags } from '@/hooks/use-tags';
 import type { Task } from '@/types';
 
 interface SubtaskFieldsProps {
@@ -18,17 +19,27 @@ interface SubtaskFieldsProps {
 export function SubtaskFields({ form, parentTasks }: SubtaskFieldsProps) {
   const {
     control,
-    register,
     formState: { errors },
   } = form;
 
   const taskOptions = useMemo(() => buildParentTaskOptions(parentTasks), [parentTasks]);
+  const { data: tagsData } = useTags();
 
   return (
     <>
       <div className="space-y-2">
-        <Label>Tags (comma-separated)</Label>
-        <Input {...register('tags')} placeholder="bug, frontend, urgent" />
+        <Label>Tags</Label>
+        <Controller
+          control={control}
+          name="tags"
+          render={({ field }) => (
+            <TagsInput
+              value={field.value}
+              onChange={field.onChange}
+              suggestions={tagsData?.tags ?? []}
+            />
+          )}
+        />
       </div>
 
       <div className="space-y-2">
