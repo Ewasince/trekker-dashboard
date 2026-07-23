@@ -55,7 +55,6 @@ export function CreateModal({
     defaultStatus,
     defaultEpicId,
     defaultParentTaskId,
-    onClose,
     onCreated,
   });
 
