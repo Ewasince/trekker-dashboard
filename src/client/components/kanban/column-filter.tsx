@@ -100,7 +100,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
       <NativePopover
         open={open}
         onClose={() => setOpen(false)}
-        className="w-80 flex flex-col gap-3"
+        className="w-64 flex flex-col gap-3"
       >
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-muted-foreground">Sort by</label>
@@ -134,7 +134,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-6 shrink-0"
+                className="h-8 w-5 shrink-0"
                 disabled={index === 0}
                 onClick={() => moveKey(index, -1)}
                 title="Move up"
@@ -144,7 +144,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-6 shrink-0"
+                className="h-8 w-5 shrink-0"
                 disabled={index === value.sort.length - 1}
                 onClick={() => moveKey(index, 1)}
                 title="Move down"
@@ -154,7 +154,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-6 shrink-0"
+                className="h-8 w-5 shrink-0"
                 onClick={() => removeKey(index)}
                 title="Remove"
               >
