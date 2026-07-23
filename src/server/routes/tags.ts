@@ -12,9 +12,9 @@ app.get('/', async (c) => {
     throw new DatabaseError('Database not initialized');
   }
 
-  const rows = sqlite
-    .query('SELECT tags FROM tasks WHERE tags IS NOT NULL')
-    .all() as { tags: string | null }[];
+  const rows = sqlite.query('SELECT tags FROM tasks WHERE tags IS NOT NULL').all() as {
+    tags: string | null;
+  }[];
 
   return c.json({ tags: collectDistinctTags(rows.map((r) => r.tags)) });
 });
