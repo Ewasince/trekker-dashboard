@@ -100,7 +100,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
       <NativePopover
         open={open}
         onClose={() => setOpen(false)}
-        className="w-64 flex flex-col gap-3"
+        className="w-80 flex flex-col gap-3"
       >
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-muted-foreground">Sort by</label>
@@ -110,7 +110,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
               <select
                 value={key.field}
                 onChange={(e) => updateKey(index, { field: e.target.value as SortField })}
-                className={`${nativeSelectStyles} flex-1`}
+                className={`${nativeSelectStyles} min-w-0 flex-1`}
               >
                 {SORT_FIELDS.filter(
                   (field) => field.value === key.field || !usedFields.has(field.value)
@@ -123,7 +123,7 @@ export function ColumnFilter({ value, onChange }: ColumnFilterProps) {
               <select
                 value={key.dir}
                 onChange={(e) => updateKey(index, { dir: e.target.value as SortDirection })}
-                className={`${nativeSelectStyles} flex-1`}
+                className={`${nativeSelectStyles} min-w-0 flex-1`}
               >
                 {(['desc', 'asc'] as SortDirection[]).map((dir) => (
                   <option key={dir} value={dir}>
