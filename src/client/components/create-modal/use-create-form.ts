@@ -19,7 +19,6 @@ interface UseCreateFormOptions {
   defaultStatus?: string;
   defaultEpicId?: string;
   defaultParentTaskId?: string;
-  onClose: () => void;
   onCreated: () => void;
 }
 
@@ -67,7 +66,6 @@ export function useCreateForm({
   defaultStatus,
   defaultEpicId,
   defaultParentTaskId,
-  onClose,
   onCreated,
 }: UseCreateFormOptions) {
   const form = useForm<CreateFormValues>({
@@ -145,7 +143,9 @@ export function useCreateForm({
           toast.success(`Task ${created.id} created`);
         }
 
-        onClose();
+        // Keep the modal open and reset for the next entry, preserving
+        // the epic/parent/status context so several items can be added in a row.
+        form.reset(getDefaultCreateFormValues(defaultStatus, defaultEpicId, defaultParentTaskId));
         onCreated();
       } catch (error) {
         toast.error(getErrorMessage(error, 'Failed to create'));
