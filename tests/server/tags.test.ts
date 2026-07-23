@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it } from 'bun:test';
-
 import { collectDistinctTags } from '@server/lib/tags';
+import { afterEach, describe, expect, it } from 'bun:test';
 
 import { cleanupApiTestContexts, createApiTestContext } from './api-test-helpers';
 

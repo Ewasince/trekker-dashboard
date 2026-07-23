@@ -14,7 +14,7 @@ export function collectDistinctTags(rows: (string | null)[]): string[] {
     }
   }
 
-  return Array.from(seen).sort((a, b) =>
+  return [...seen].sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase())
   );
 }
