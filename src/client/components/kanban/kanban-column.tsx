@@ -12,7 +12,7 @@ import { EpicCard } from '@/components/kanban/epic-card';
 import { TaskCard } from '@/components/kanban/task-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { compareBySortOption } from '@/lib/sort';
+import { compareByKeys } from '@/lib/sort';
 import { countCompleted } from '@/lib/status';
 import type { Epic, Task } from '@/types';
 
@@ -43,12 +43,12 @@ export function KanbanColumn({
 
   const filteredEpics = useMemo(() => {
     if (filter.type === 'task') return [];
-    return [...epics].sort((a, b) => compareBySortOption(a, b, filter.sort));
+    return [...epics].sort((a, b) => compareByKeys(a, b, filter.sort));
   }, [epics, filter]);
 
   const filteredTasks = useMemo(() => {
     if (filter.type === 'epic') return [];
-    return [...tasks].sort((a, b) => compareBySortOption(a, b, filter.sort));
+    return [...tasks].sort((a, b) => compareByKeys(a, b, filter.sort));
   }, [tasks, filter]);
 
   const totalCount = filteredTasks.length + filteredEpics.length;
