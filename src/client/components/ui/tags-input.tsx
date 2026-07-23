@@ -23,6 +23,16 @@ function parseTags(value: string): string[] {
     .filter((t) => t.length > 0);
 }
 
+function dedupeTags(list: string[]): string[] {
+  const seen = new Set<string>();
+  return list.filter((t) => {
+    const key = t.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export function TagsInput({
   value,
   onChange,
@@ -34,17 +44,10 @@ export function TagsInput({
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  const tags = React.useMemo(() => parseTags(value), [value]);
+  const tags = React.useMemo(() => dedupeTags(parseTags(value)), [value]);
 
   const setTags = (next: string[]) => {
-    // Dedupe (case-insensitive) preserving order, then join.
-    const seen = new Set<string>();
-    const deduped = next.filter((t) => {
-      const key = t.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const deduped = dedupeTags(next);
     onChange(deduped.join(', '));
   };
 
@@ -72,16 +75,30 @@ export function TagsInput({
   });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === 'Enter' || e.key === ',') && search.trim().length > 0) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (search.trim().length > 0) {
+        addTag(search);
+      }
+      return;
+    }
+
+    if (e.key === ',' && search.trim().length > 0) {
       e.preventDefault();
       addTag(search);
       return;
     }
 
-    if (e.key === 'Backspace' && search.length === 0 && tags.length > 0) {
-      removeTag(tags[tags.length - 1]);
+    const lastTag = tags.at(-1);
+    if (e.key === 'Backspace' && search.length === 0 && lastTag) {
+      removeTag(lastTag);
     }
   };
+
+  let inputPlaceholder = '';
+  if (tags.length === 0) {
+    inputPlaceholder = placeholder;
+  }
 
   return (
     <div ref={containerRef} className={cn('relative', className)}>
@@ -104,7 +121,7 @@ export function TagsInput({
           onChange={(e) => setSearch(e.target.value)}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={tags.length === 0 ? placeholder : ''}
+          placeholder={inputPlaceholder}
           className="h-6 flex-1 min-w-24 border-0 p-0 shadow-none focus-visible:ring-0"
         />
       </div>
