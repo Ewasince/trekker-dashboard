@@ -1,5 +1,6 @@
 'use client';
 
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -11,6 +12,8 @@ import {
 import { TaskEdit } from '@/components/task-detail/task-edit';
 import { TaskView } from '@/components/task-detail/task-view';
 import { useTaskForm } from '@/components/task-detail/use-task-form';
+import { Button } from '@/components/ui/button';
+import { useUIStore } from '@/stores';
 import type { Epic, Task } from '@/types';
 
 interface TaskDetailModalProps {
@@ -35,6 +38,7 @@ export function TaskDetailModal({
   onEpicClick,
 }: TaskDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const openCreateModal = useUIStore((s) => s.openCreateModal);
 
   const {
     form,
@@ -56,6 +60,21 @@ export function TaskDetailModal({
   };
 
   if (!task) return null;
+
+  const handleAddSubtask = () => {
+    handleClose();
+    openCreateModal({ type: 'subtask', status: 'todo', parentTaskId: task.id });
+  };
+
+  let addSubtaskAction: React.ReactNode = null;
+  if (!task.parentTaskId) {
+    addSubtaskAction = (
+      <Button variant="outline" size="sm" onClick={handleAddSubtask}>
+        <Plus className="mr-1 h-4 w-4" />
+        Add subtask
+      </Button>
+    );
+  }
 
   const subtasks = getSubtasksForTask(allTasks, task.id);
   const breadcrumbItems = buildTaskBreadcrumbItems(epics, allTasks, {
@@ -88,6 +107,7 @@ export function TaskDetailModal({
         onEpicClick={onEpicClick}
         getEpicById={getEpicById}
         getTaskById={getTaskById}
+        actions={addSubtaskAction}
       />
 
       <TaskEdit

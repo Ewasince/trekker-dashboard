@@ -20,6 +20,7 @@ interface TaskViewProps {
   onEpicClick?: (epic: Epic) => void;
   getEpicById: (id: string) => Epic | undefined;
   getTaskById: (id: string) => Task | undefined;
+  actions?: React.ReactNode;
 }
 
 export function TaskView({
@@ -37,6 +38,7 @@ export function TaskView({
   onEpicClick,
   getEpicById,
   getTaskById,
+  actions,
 }: TaskViewProps) {
   return (
     <DetailModalShell
@@ -46,6 +48,7 @@ export function TaskView({
       title={task.title}
       description={task.description}
       onEdit={onEdit}
+      actions={actions}
     >
       <TaskSidebar
         task={{ ...task, status, priority }}
