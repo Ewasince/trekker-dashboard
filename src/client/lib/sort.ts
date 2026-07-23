@@ -31,23 +31,59 @@ interface Sortable {
   title: string;
 }
 
-export function compareBySortOption<T extends Sortable>(a: T, b: T, sort: SortOption): number {
-  switch (sort) {
-    case 'created:desc':
-      return dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf();
-    case 'created:asc':
-      return dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf();
-    case 'updated:desc':
-      return dayjs(b.updatedAt).valueOf() - dayjs(a.updatedAt).valueOf();
-    case 'priority:asc':
+export type SortField = 'priority' | 'created' | 'updated' | 'title';
+export type SortDirection = 'asc' | 'desc';
+export interface SortKey {
+  field: SortField;
+  dir: SortDirection;
+}
+
+export const SORT_FIELDS: { value: SortField; label: string }[] = [
+  { value: 'priority', label: 'Priority' },
+  { value: 'created', label: 'Created' },
+  { value: 'updated', label: 'Updated' },
+  { value: 'title', label: 'Title' },
+];
+
+// Direction labels are field-specific so "asc/desc" stays meaningful
+// (priority 0 = highest, so ascending number = high priority first).
+export function directionLabel(field: SortField, dir: SortDirection): string {
+  switch (field) {
+    case 'priority':
+      if (dir === 'asc') return 'High → Low';
+      return 'Low → High';
+    case 'title':
+      if (dir === 'asc') return 'A → Z';
+      return 'Z → A';
+    case 'created':
+    case 'updated':
+      if (dir === 'desc') return 'Newest';
+      return 'Oldest';
+  }
+}
+
+function compareByField<T extends Sortable>(a: T, b: T, field: SortField): number {
+  switch (field) {
+    case 'priority':
       return a.priority - b.priority;
-    case 'priority:desc':
-      return b.priority - a.priority;
-    case 'title:asc':
+    case 'created':
+      return dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf();
+    case 'updated':
+      return dayjs(a.updatedAt).valueOf() - dayjs(b.updatedAt).valueOf();
+    case 'title':
       return a.title.localeCompare(b.title);
-    case 'title:desc':
-      return b.title.localeCompare(a.title);
     default:
       return 0;
   }
+}
+
+export function compareByKeys<T extends Sortable>(a: T, b: T, keys: SortKey[]): number {
+  for (const key of keys) {
+    const result = compareByField(a, b, key.field);
+    if (result !== 0) {
+      if (key.dir === 'asc') return result;
+      return -result;
+    }
+  }
+  return 0;
 }
