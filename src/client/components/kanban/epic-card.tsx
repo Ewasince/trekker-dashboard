@@ -6,6 +6,7 @@ import { PriorityBadge } from '@/components/priority-badge';
 import { Progress } from '@/components/ui/progress';
 import { FULL_PERCENTAGE } from '@/lib/constants';
 import { formatRelativeTime } from '@/lib/date';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import type { Epic } from '@/types';
 
 interface EpicCardProps {
@@ -23,7 +24,7 @@ export function EpicCard({ epic, taskCount, onClick }: EpicCardProps) {
   return (
     <div
       className="p-2 cursor-pointer bg-blue-50 dark:bg-blue-800 hover:ring wrap-break-word"
-      onClick={onClick}
+      {...entityOpenHandlers(epic.id, onClick)}
     >
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-1.5">

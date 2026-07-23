@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import type { ListItem, ListResponse } from '@/hooks/use-list';
 import { PRIORITY_LABELS, PRIORITY_STYLES, STATUS_LABELS, STATUS_STYLES } from '@/lib/constants';
 import { formatDate } from '@/lib/date';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import { cn } from '@/lib/utils';
 import { PageResultsFrame } from '@/pages/page-results-frame';
 
@@ -53,7 +54,7 @@ export function ListPageResults({
               <tr
                 key={item.id}
                 className="cursor-pointer border-t transition-colors hover:bg-muted/30"
-                onClick={() => onRowClick(item)}
+                {...entityOpenHandlers(item.id, () => onRowClick(item))}
               >
                 <td className="px-4 py-3 font-mono text-sm text-muted-foreground">{item.id}</td>
                 <td className="px-4 py-3">

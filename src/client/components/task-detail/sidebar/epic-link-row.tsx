@@ -3,6 +3,7 @@
 import { ChevronRight } from 'lucide-react';
 
 import { DetailRow } from '@/components/task-detail/sidebar/detail-row';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import type { Epic } from '@/types';
 
 interface EpicLinkRowProps {
@@ -24,7 +25,7 @@ export function EpicLinkRow({ epic, onEpicClick }: EpicLinkRowProps) {
       <button
         type="button"
         className="flex items-center gap-0.5 text-sm text-purple-500 hover:text-purple-600"
-        onClick={() => onEpicClick(epic)}
+        {...entityOpenHandlers(epic.id, () => onEpicClick(epic))}
       >
         {epic.id}
         <ChevronRight className="h-3 w-3" />
