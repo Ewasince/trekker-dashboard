@@ -1,4 +1,4 @@
-import { collectDistinctTags } from '@server/lib/tags';
+import { buildTagFilterClause, collectDistinctTags } from '@server/lib/tags';
 import { afterEach, describe, expect, it } from 'bun:test';
 
 import { cleanupApiTestContexts, createApiTestContext } from './api-test-helpers';
@@ -29,5 +29,22 @@ describe('GET /api/tags', () => {
     const response = await context.requestJson<{ tags: string[] }>('/api/tags');
     expect(response.status).toBe(200);
     expect(response.body.tags).toEqual(['bug', 'frontend', 'urgent']);
+  });
+});
+
+describe('buildTagFilterClause', () => {
+  it('builds one OR-combined LIKE condition per tag with bound params', () => {
+    const { clause, params } = buildTagFilterClause(['ui', 'backend']);
+    expect(params).toEqual(['ui', 'backend']);
+    expect(clause).toBe(
+      "((',' || REPLACE(tags, ', ', ',') || ',') LIKE ('%,' || ? || ',%') OR " +
+        "(',' || REPLACE(tags, ', ', ',') || ',') LIKE ('%,' || ? || ',%'))"
+    );
+  });
+
+  it('builds a single-condition clause for one tag', () => {
+    const { clause, params } = buildTagFilterClause(['ui']);
+    expect(params).toEqual(['ui']);
+    expect(clause).toBe("((',' || REPLACE(tags, ', ', ',') || ',') LIKE ('%,' || ? || ',%'))");
   });
 });
