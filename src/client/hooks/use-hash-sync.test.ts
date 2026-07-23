@@ -1,8 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 
+import { parseHashId, resolveEntity } from '@/hooks/use-hash-sync';
 import type { Epic, Task } from '@/types';
-
-import { parseHashId, resolveEntity } from './use-hash-sync';
 
 const task = { id: 'TREK-5' } as unknown as Task;
 const subtask = { id: 'TREK-9', parentTaskId: 'TREK-5' } as unknown as Task;
