@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -68,6 +69,7 @@ export function useCreateForm({
   defaultParentTaskId,
   onCreated,
 }: UseCreateFormOptions) {
+  const queryClient = useQueryClient();
   const form = useForm<CreateFormValues>({
     resolver: zodResolver(SCHEMA_BY_TYPE[type]),
     defaultValues: getDefaultCreateFormValues(defaultStatus, defaultEpicId, defaultParentTaskId),
@@ -143,6 +145,7 @@ export function useCreateForm({
           toast.success(`Task ${created.id} created`);
         }
 
+        queryClient.invalidateQueries({ queryKey: ['tags'] });
         // Keep the modal open and reset for the next entry, preserving
         // the epic/parent/status context so several items can be added in a row.
         form.reset(getDefaultCreateFormValues(defaultStatus, defaultEpicId, defaultParentTaskId));
