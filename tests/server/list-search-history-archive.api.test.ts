@@ -197,4 +197,23 @@ describe('list, search, history, and archive APIs', () => {
     expect(untouchedEpic.status).toBe(200);
     expect(untouchedEpic.body.status).toBe('todo');
   });
+
+  it('filters the list by tag (ANY match, no substring collisions)', async () => {
+    const context = createApiTestContext(cleanupDirs);
+
+    const uiTask = await context.createTask({ title: 'UI Task', tags: 'ui, urgent' });
+    const backendTask = await context.createTask({ title: 'Backend Task', tags: 'backend' });
+    await context.createTask({ title: 'Guide Task', tags: 'guide' });
+
+    const uiOnly = await context.requestJson<ListResponse>('/api/list?tags=ui');
+    expect(uiOnly.status).toBe(200);
+    expect(uiOnly.body.total).toBe(1);
+    expect(uiOnly.body.items[0]?.id).toBe(uiTask.id); // "ui" must NOT match "guide"
+
+    const either = await context.requestJson<ListResponse>('/api/list?tags=ui,backend');
+    expect(either.status).toBe(200);
+    expect(either.body.items.map((item) => item.id).sort()).toEqual(
+      [uiTask.id, backendTask.id].sort()
+    );
+  });
 });

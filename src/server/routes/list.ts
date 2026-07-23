@@ -2,6 +2,7 @@ import { DatabaseError, ValidationError } from '@server/errors';
 import { DEFAULT_LIST_QUERY_LIMIT, DEFAULT_PAGE, SQLITE_MILLISECONDS } from '@server/lib/constants';
 import { getDb, getSqliteInstance } from '@server/lib/db';
 import { parseCsvQuery, parseNumberCsvQuery, parseQueryNumber } from '@server/lib/query';
+import { buildTagFilterClause } from '@server/lib/tags';
 import { Hono } from 'hono';
 
 const app = new Hono();
@@ -70,6 +71,8 @@ app.get('/', async (c) => {
   const statuses = parseCsvQuery(statusParam);
   const priorityParam = c.req.query('priority');
   const priorities = parseNumberCsvQuery(priorityParam);
+  const tagParam = c.req.query('tags');
+  const tags = parseCsvQuery(tagParam);
   const since = c.req.query('since');
   const until = c.req.query('until');
   const sortParam = c.req.query('sort');
@@ -97,6 +100,12 @@ app.get('/', async (c) => {
     const placeholders = priorities.map(() => '?').join(', ');
     conditions.push(`priority IN (${placeholders})`);
     params.push(...priorities);
+  }
+
+  if (tags && tags.length > 0) {
+    const tagFilter = buildTagFilterClause(tags);
+    conditions.push(tagFilter.clause);
+    params.push(...tagFilter.params);
   }
 
   if (since) {
@@ -129,11 +138,11 @@ app.get('/', async (c) => {
 
   // Base query using UNION ALL
   const baseQuery = `
-    SELECT 'epic' as type, id, title, status, priority, NULL as parent_id, created_at, updated_at FROM epics
+    SELECT 'epic' as type, id, title, status, priority, NULL as parent_id, NULL as tags, created_at, updated_at FROM epics
     UNION ALL
-    SELECT 'task' as type, id, title, status, priority, epic_id as parent_id, created_at, updated_at FROM tasks WHERE parent_task_id IS NULL
+    SELECT 'task' as type, id, title, status, priority, epic_id as parent_id, tags, created_at, updated_at FROM tasks WHERE parent_task_id IS NULL
     UNION ALL
-    SELECT 'subtask' as type, id, title, status, priority, parent_task_id as parent_id, created_at, updated_at FROM tasks WHERE parent_task_id IS NOT NULL
+    SELECT 'subtask' as type, id, title, status, priority, parent_task_id as parent_id, tags, created_at, updated_at FROM tasks WHERE parent_task_id IS NOT NULL
   `;
 
   // Count total results
