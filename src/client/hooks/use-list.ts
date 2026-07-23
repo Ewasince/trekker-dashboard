@@ -28,6 +28,7 @@ export interface ListFilters {
   types?: ListEntityType[];
   statuses?: string[];
   priorities?: number[];
+  tags?: string[];
   sort?: string;
   limit?: number;
   page?: number;
@@ -42,6 +43,7 @@ async function fetchList(filters: ListFilters): Promise<ListResponse> {
       type: filters.types,
       status: filters.statuses,
       priority: filters.priorities,
+      tags: filters.tags,
       sort: filters.sort,
       limit: filters.limit,
       page: filters.page,
