@@ -9,6 +9,7 @@ import {
 } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { EPIC_STATUSES } from '@/lib/constants';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import { isTerminalStatus } from '@/lib/status';
 import { cn } from '@/lib/utils';
 import type { Task } from '@/types';
@@ -80,7 +81,7 @@ export function EpicSidebar({
                     key={task.id}
                     variant="ghost"
                     className="w-full justify-start h-auto p-1.5 gap-2 whitespace-normal"
-                    onClick={() => onTaskClick?.(task)}
+                    {...entityOpenHandlers(task.id, () => onTaskClick?.(task))}
                   >
                     <StatusIcon status={task.status} />
                     <span className="font-mono text-xs text-muted-foreground shrink-0">

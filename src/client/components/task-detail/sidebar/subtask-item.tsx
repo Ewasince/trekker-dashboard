@@ -2,6 +2,7 @@
 
 import { StatusIcon } from '@/components/shared';
 import { Button } from '@/components/ui/button';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import { isTerminalStatus } from '@/lib/status';
 import { cn } from '@/lib/utils';
 import type { Task } from '@/types';
@@ -15,7 +16,11 @@ export function SubtaskItem({ subtask, onClick }: SubtaskItemProps) {
   const isDone = isTerminalStatus(subtask.status);
 
   return (
-    <Button variant="ghost" className="h-auto w-full justify-start gap-2 p-1.5" onClick={onClick}>
+    <Button
+      variant="ghost"
+      className="h-auto w-full justify-start gap-2 p-1.5"
+      {...entityOpenHandlers(subtask.id, onClick)}
+    >
       <StatusIcon status={subtask.status} />
       <span className="font-mono text-xs text-muted-foreground">{subtask.id}</span>
       <span

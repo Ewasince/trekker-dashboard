@@ -2,6 +2,7 @@
 
 import { ArrowLeftToLine, ArrowRightFromLine } from 'lucide-react';
 
+import { entityOpenHandlers } from '@/lib/entity-open';
 import { cn } from '@/lib/utils';
 
 interface TaskLinkProps {
@@ -28,7 +29,7 @@ export function TaskLink({ taskId, variant, onClick }: TaskLinkProps) {
         variant === 'blocks' &&
           'bg-rose-500/10 text-rose-600 hover:ring-rose-500/50 dark:text-rose-400'
       )}
-      onClick={onClick}
+      {...entityOpenHandlers(taskId, onClick)}
       title={title}
     >
       <Icon className="h-3 w-3" />

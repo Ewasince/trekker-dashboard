@@ -5,6 +5,7 @@ import { HistoryChangeList } from '@/components/shared/history-change-list';
 import { Badge } from '@/components/ui/badge';
 import type { HistoryEntityType, HistoryEvent } from '@/hooks/use-history';
 import { formatRelativeTime } from '@/lib/date';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import { cn } from '@/lib/utils';
 
 interface HistoryEventItemProps {
@@ -38,6 +39,12 @@ export function HistoryEventItem({ event, onEntityClick }: HistoryEventItemProps
   const title = getHistoryEventTitle(event);
   const canClick =
     event.action !== 'delete' && ['epic', 'task', 'subtask'].includes(event.entityType);
+  let openHandlers = {};
+  if (canClick) {
+    openHandlers = entityOpenHandlers(event.entityId, () =>
+      onEntityClick(event.entityType, event.entityId)
+    );
+  }
 
   return (
     <div className="flex gap-3 p-4 border-b last:border-b-0 hover:bg-muted/30 transition-colors">
@@ -52,7 +59,7 @@ export function HistoryEventItem({ event, onEntityClick }: HistoryEventItemProps
               canClick && 'hover:underline cursor-pointer',
               event.action === 'delete' && 'line-through text-muted-foreground'
             )}
-            onClick={() => canClick && onEntityClick(event.entityType, event.entityId)}
+            {...openHandlers}
             disabled={!canClick}
           >
             {event.entityId}

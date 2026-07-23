@@ -6,6 +6,7 @@ import { PriorityBadge } from '@/components/priority-badge';
 import { SubtaskProgress } from '@/components/subtask-progress';
 import { Badge } from '@/components/ui/badge';
 import { formatRelativeTime } from '@/lib/date';
+import { entityOpenHandlers } from '@/lib/entity-open';
 import type { Task } from '@/types';
 
 interface TaskCardProps {
@@ -22,7 +23,7 @@ export function TaskCard({ task, epicName, subtasks, onClick }: TaskCardProps) {
     <div
       data-task-id={task.id}
       className={`p-2 cursor-pointer hover:ring bg-accent w-full flex flex-col wrap-break-word`}
-      onClick={onClick}
+      {...entityOpenHandlers(task.id, onClick)}
     >
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-1.5">
